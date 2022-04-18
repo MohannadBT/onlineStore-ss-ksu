@@ -65,7 +65,7 @@ if(isset($_SESSION['id'])){
 
         // AWS Info
 	      $bucketName = 'onlinestore-ss-ksu';
-	     $IAM_KEY = 'AKIAVJSBIUOZWYPMZY54';
+	      $IAM_KEY = 'AKIAVJSBIUOZWYPMZY54';
 	      $IAM_SECRET = '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';
 
 	      // Connect to AWS
