@@ -20,6 +20,10 @@ else if ($_SESSION["type"] == 0)
     $var = htmlspecialchars($var);
     return $var;
   }
+  require 'vendor/autoload.php';
+
+	use Aws\S3\S3Client;
+	use Aws\S3\Exception\S3Exception;
 
 if(isset($_GET['id'])){
 $_SESSION['id'] = test_input($_GET['id']);
@@ -56,6 +60,59 @@ if(isset($_SESSION['id'])){
 		    $new_img_name = uniqid("IMG-", true).'.'.$img_ex_acc;
 		    $img_destination = 'imgs/products/'. $new_img_name;
 		    move_uploaded_file($img_temp, $img_destination);
+
+
+
+        // AWS Info
+	      $bucketName = 'onlinestore-ss-ksu';
+	     $IAM_KEY = 'AKIAVJSBIUOZWYPMZY54';
+	      $IAM_SECRET = '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';
+
+	      // Connect to AWS
+	      // try {
+		     // You may need to change the region. It will say in the URL when the bucket is open
+		     // and on creation.
+		     $s3 = S3Client::factory(
+			      array(
+				      'credentials' => array(
+				  	  'key' => $IAM_KEY,
+				  	  'secret' => $IAM_SECRET
+              ),
+				      'version' => 'latest',
+				      'region'  => 'eu-central-1'
+			      )
+		      );
+	      // } catch (Exception $e) {
+		    //     // We use a die, so if this fails. It stops here. Typically this is a REST call so this would
+		    //     // return a json object.
+		    //     die("Error: " . $e->getMessage());
+	      // }
+
+	
+	      // For this, I would generate a unqiue random string for the key name. But you can do whatever.
+	      $keyName = 'imgs/products/' . $new_img_name;
+	      //$pathInS3 = 'https://s3.us-east-2.amazonaws.com/' . $bucketName . '/' . $keyName;
+        $pathInS3 ='https://onlinestore-ss-ksu.s3.eu-central-1.amazonaws.com/' . $bucketName . '/' . $keyName;
+
+	      // Add it to S3
+	      try {
+		      // Uploaded:
+		      $file = $_FILES["fileToUpload"]['tmp_name'];
+
+		      $s3->putObject(
+			      array(
+				      'Bucket'=>$bucketName,
+				      'Key' =>  $keyName,
+				      'SourceFile' => $file,
+				      'StorageClass' => 'REDUCED_REDUNDANCY'
+			      )
+		      );
+
+	      } catch (S3Exception $e) {
+		     die('Error:' . $e->getMessage());
+	      } catch (Exception $e) {
+		      die('Error:' . $e->getMessage());
+	      }
       }
       if(isset($img_destination)){
         echo "yes";
