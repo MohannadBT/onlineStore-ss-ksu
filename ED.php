@@ -90,9 +90,9 @@ if(isset($_SESSION['id'])){
 
 	
 	      // For this, I would generate a unqiue random string for the key name. But you can do whatever.
-	      $keyName = 'imgs/products/' . $new_img_name;
+	      //$keyName = 'imgs/products/' . $new_img_name;
 	      //$pathInS3 = 'https://s3.us-east-2.amazonaws.com/' . $bucketName . '/' . $keyName;
-        $pathInS3 ='https://onlinestore-ss-ksu.s3.eu-central-1.amazonaws.com/' . $bucketName . '/' . $keyName;
+        $pathInS3 ='https://onlinestore-ss-ksu.s3.eu-central-1.amazonaws.com/' . $bucketName . '/' . $img_destination;
 
 	      // Add it to S3
 	      try {
@@ -102,7 +102,7 @@ if(isset($_SESSION['id'])){
 		      $s3->putObject(
 			      array(
 				      'Bucket'=>$bucketName,
-				      'Key' =>  $keyName,
+				      'Key' =>  $img_destination,
 				      'SourceFile' => $file,
 				      'StorageClass' => 'REDUCED_REDUNDANCY'
 			      )
